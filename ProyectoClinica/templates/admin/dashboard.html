@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Administrador</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <box-icon name='plus-medical' color='#4cd1ff' size='md'></box-icon>
+            <h2>Clínica <span>Vital</span></h2>
+        </div>
+        
+        <nav class="menu">
+            <a href="{{ url_for('dashboard_admin') }}" class="menu-item active">
+                <box-icon name='home' color='#fff'></box-icon>
+                <span>Inicio</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='group' color='#fff'></box-icon>
+                <span>Usuarios</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='user-plus' color='#fff'></box-icon>
+                <span>Roles y Permisos</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='briefcase-alt-2' color='#fff'></box-icon>
+                <span>Especialidades</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='bar-chart-alt-2' color='#fff'></box-icon>
+                <span>Reportes</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='time-five' color='#fff'></box-icon>
+                <span>Auditoría</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='cog' color='#fff'></box-icon>
+                <span>Configuración</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="menu-item logout">
+                <box-icon name='log-out' color='#ff4757'></box-icon>
+                <span>Cerrar Sesión</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="search-bar">
+                <box-icon name='search' color='#666'></box-icon>
+                <input type="text" placeholder="Buscar en el sistema...">
+            </div>
+            <div class="user-info">
+                <div class="notifications">
+                    <box-icon name='bell' color='#666'></box-icon>
+                    <span class="badge">5</span>
+                </div>
+                <span class="welcome-text">Administrador, <strong>{{ session.nombre_completo }}</strong></span>
+                <div class="user-avatar">
+                    <box-icon name='user-circle' color='#4cd1ff' size='lg'></box-icon>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <h1 class="page-title">Panel de Administración</h1>
+            
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <box-icon name='user' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ total_usuarios }}</h3>
+                        <p>Usuarios Activos</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <box-icon name='calendar-check' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ citas_hoy }}</h3>
+                        <p>Citas Hoy</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <box-icon name='file-blank' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ consultas_hoy }}</h3>
+                        <p>Consultas Hoy</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <box-icon name='dollar-circle' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>$12,450</h3>
+                        <p>Ingresos del Mes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gráficos y Estadísticas -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='bar-chart-alt-2' color='#4cd1ff'></box-icon>
+                        Vista General del Sistema
+                    </h2>
+                    <select class="filter-select">
+                        <option>Esta Semana</option>
+                        <option>Este Mes</option>
+                        <option>Este Año</option>
+                    </select>
+                </div>
+
+                <div class="overview-grid">
+                    <div class="overview-card">
+                        <div class="overview-header">
+                            <h3>Usuarios por Rol</h3>
+                            <box-icon name='group' color='#4cd1ff'></box-icon>
+                        </div>
+                        <div class="role-stats">
+                            <div class="role-item">
+                                <div class="role-bar" style="width: 25%; background: #4cd1ff;"></div>
+                                <span class="role-label">Doctores: 12</span>
+                            </div>
+                            <div class="role-item">
+                                <div class="role-bar" style="width: 15%; background: #7c4dff;"></div>
+                                <span class="role-label">Secretarias: 5</span>
+                            </div>
+                            <div class="role-item">
+                                <div class="role-bar" style="width: 85%; background: #5cb85c;"></div>
+                                <span class="role-label">Pacientes: 139</span>
+                            </div>
+                            <div class="role-item">
+                                <div class="role-bar" style="width: 5%; background: #ff9f43;"></div>
+                                <span class="role-label">Admins: 2</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="overview-card">
+                        <div class="overview-header">
+                            <h3>Actividad Reciente</h3>
+                            <box-icon name='trending-up' color='#5cb85c'></box-icon>
+                        </div>
+                        <div class="activity-chart">
+                            <canvas id="activityChart" style="max-height: 200px;"></canvas>
+                            <p style="text-align: center; color: #999; margin-top: 20px;">
+                                📊 Gráfico de actividad
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Gestión de Usuarios -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='user-check' color='#4cd1ff'></box-icon>
+                        Gestión de Usuarios
+                    </h2>
+                    <button class="btn-primary">
+                        <box-icon name='user-plus' color='#fff' size='xs'></box-icon>
+                        Nuevo Usuario
+                    </button>
+                </div>
+
+                <div class="users-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Usuario</th>
+                                <th>Email</th>
+                                <th>Rol</th>
+                                <th>Estado</th>
+                                <th>Fecha Registro</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>#001</td>
+                                <td>
+                                    <div class="patient-cell">
+                                        <box-icon name='user-circle' color='#4cd1ff' size='sm'></box-icon>
+                                        <span>Dr. Juan García</span>
+                                    </div>
+                                </td>
+                                <td>doctor@clinica.com</td>
+                                <td><span class="specialty-badge">Doctor</span></td>
+                                <td><span class="status-badge status-confirmada">Activo</span></td>
+                                <td>15/01/2024</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon" title="Ver">
+                                        <box-icon name='show' color='#4cd1ff'></box-icon>
+                                    </button>
+                                    <button class="btn-icon" title="Editar">
+                                        <box-icon name='edit' color='#5cb85c'></box-icon>
+                                    </button>
+                                    <button class="btn-icon" title="Desactivar">
+                                        <box-icon name='x-circle' color='#ff4757'></box-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#002</td>
+                                <td>
+                                    <div class="patient-cell">
+                                        <box-icon name='user-circle' color='#7c4dff' size='sm'></box-icon>
+                                        <span>María López</span>
+                                    </div>
+                                </td>
+                                <td>secretaria@clinica.com</td>
+                                <td><span class="specialty-badge" style="background: #f3e5f5; color: #7b1fa2;">Secretaria</span></td>
+                                <td><span class="status-badge status-confirmada">Activo</span></td>
+                                <td>20/01/2024</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon" title="Ver">
+                                        <box-icon name='show' color='#4cd1ff'></box-icon>
+                                    </button>
+                                    <button class="btn-icon" title="Editar">
+                                        <box-icon name='edit' color='#5cb85c'></box-icon>
+                                    </button>
+                                    <button class="btn-icon" title="Desactivar">
+                                        <box-icon name='x-circle' color='#ff4757'></box-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>#003</td>
+                                <td>
+                                    <div class="patient-cell">
+                                        <box-icon name='user-circle' color='#5cb85c' size='sm'></box-icon>
+                                        <span>Carlos Rodríguez</span>
+                                    </div>
+                                </td>
+                                <td>paciente@clinica.com</td>
+                                <td><span class="specialty-badge" style="background: #e8f5e9; color: #388e3c;">Paciente</span></td>
+                                <td><span class="status-badge status-confirmada">Activo</span></td>
+                                <td>25/01/2024</td>
+                                <td class="actions-cell">
+                                    <button class="btn-icon" title="Ver">
+                                        <box-icon name='show' color='#4cd1ff'></box-icon>
+                                    </button>
+                                    <button class="btn-icon" title="Editar">
+                                        <box-icon name='edit' color='#5cb85c'></box-icon>
+                                    </button>
+                                    <button class="btn-icon" title="Desactivar">
+                                        <box-icon name='x-circle' color='#ff4757'></box-icon>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas Admin -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='zap' color='#4cd1ff'></box-icon>
+                        Acciones Administrativas
+                    </h2>
+                </div>
+
+                <div class="quick-actions">
+                    <a href="#" class="action-card">
+                        <box-icon name='user-plus' color='#4cd1ff' size='lg'></box-icon>
+                        <h3>Crear Usuario</h3>
+                        <p>Agregar nuevo usuario al sistema</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='shield-alt-2' color='#7c4dff' size='lg'></box-icon>
+                        <h3>Gestionar Roles</h3>
+                        <p>Configurar permisos y roles</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='briefcase-alt-2' color='#5cb85c' size='lg'></box-icon>
+                        <h3>Especialidades</h3>
+                        <p>Administrar especialidades médicas</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='bar-chart-alt-2' color='#ff9f43' size='lg'></box-icon>
+                        <h3>Reportes</h3>
+                        <p>Ver estadísticas detalladas</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='time-five' color='#17a2b8' size='lg'></box-icon>
+                        <h3>Auditoría</h3>
+                        <p>Registro de actividades</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='download' color='#6c757d' size='lg'></box-icon>
+                        <h3>Respaldos</h3>
+                        <p>Backup de la base de datos</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='cog' color='#fd7e14' size='lg'></box-icon>
+                        <h3>Configuración</h3>
+                        <p>Ajustes del sistema</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='message-square-detail' color='#e83e8c' size='lg'></box-icon>
+                        <h3>Notificaciones</h3>
+                        <p>Enviar avisos masivos</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Actividad Reciente del Sistema -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='history' color='#4cd1ff'></box-icon>
+                        Actividad Reciente del Sistema
+                    </h2>
+                </div>
+
+                <div class="activity-list">
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #e3f2fd;">
+                            <box-icon name='user-plus' color='#1976d2' size='sm'></box-icon>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Nuevo usuario registrado</h4>
+                            <p>Carlos Méndez se ha registrado como paciente</p>
+                            <span class="activity-time">Hace 5 minutos</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #f3e5f5;">
+                            <box-icon name='calendar-check' color='#7b1fa2' size='sm'></box-icon>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Cita agendada</h4>
+                            <p>Secretaría agendó cita para Ana García con Dr. López</p>
+                            <span class="activity-time">Hace 15 minutos</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #e8f5e9;">
+                            <box-icon name='file-blank' color='#388e3c' size='sm'></box-icon>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Historia clínica creada</h4>
+                            <p>Dr. García creó historia clínica para paciente #245</p>
+                            <span class="activity-time">Hace 1 hora</span>
+                        </div>
+                    </div>
+
+                    <div class="activity-item">
+                        <div class="activity-icon" style="background: #fff3e0;">
+                            <box-icon name='log-in' color='#f57c00' size='sm'></box-icon>
+                        </div>
+                        <div class="activity-content">
+                            <h4>Inicio de sesión</h4>
+                            <p>Dr. Martínez inició sesión en el sistema</p>
+                            <span class="activity-time">Hace 2 horas</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .filter-select {
+            padding: 8px 15px;
+            border: 2px solid #f0f0f0;
+            border-radius: 8px;
+            background: #fff;
+            color: #666;
+            font-size: 0.9em;
+            cursor: pointer;
+            outline: none;
+        }
+
+        .overview-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .overview-card {
+            background: #f8f9fa;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        .overview-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .overview-header h3 {
+            color: #2d2d44;
+            font-size: 1.1em;
+        }
+
+        .role-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .role-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .role-bar {
+            height: 8px;
+            border-radius: 4px;
+            transition: width 0.3s ease;
+        }
+
+        .role-label {
+            font-size: 0.9em;
+            color: #666;
+        }
+
+        .activity-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .activity-item {
+            display: flex;
+            gap: 15px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .activity-item:hover {
+            background: #fff;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.08);
+        }
+
+        .activity-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .activity-content h4 {
+            color: #2d2d44;
+            margin-bottom: 5px;
+            font-size: 1em;
+        }
+
+        .activity-content p {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 5px;
+        }
+
+        .activity-time {
+            color: #999;
+            font-size: 0.85em;
+        }
+    </style>
+</body>
+</html>

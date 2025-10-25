@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Doctor</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <box-icon name='plus-medical' color='#4cd1ff' size='md'></box-icon>
+            <h2>Clínica <span>Vital</span></h2>
+        </div>
+        
+        <nav class="menu">
+            <a href="{{ url_for('dashboard_doctor') }}" class="menu-item active">
+                <box-icon name='home' color='#fff'></box-icon>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('historias_clinicas') }}" class="menu-item">
+                <box-icon name='file-blank' color='#fff'></box-icon>
+                <span>Historias Clínicas</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='calendar' color='#fff'></box-icon>
+                <span>Mis Citas</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='user' color='#fff'></box-icon>
+                <span>Pacientes</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="menu-item logout">
+                <box-icon name='log-out' color='#ff4757'></box-icon>
+                <span>Cerrar Sesión</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="search-bar">
+                <box-icon name='search' color='#666'></box-icon>
+                <input type="text" placeholder="Buscar paciente...">
+            </div>
+            <div class="user-info">
+                <span class="welcome-text">Bienvenido, <strong>{{ session.nombre_completo }}</strong></span>
+                <div class="user-avatar">
+                    <box-icon name='user-circle' color='#4cd1ff' size='lg'></box-icon>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <h1 class="page-title">Panel de Doctor</h1>
+            
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <box-icon name='calendar-check' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ citas|length }}</h3>
+                        <p>Citas Hoy</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <box-icon name='file-blank' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>12</h3>
+                        <p>Historias Clínicas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <box-icon name='user-plus' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>48</h3>
+                        <p>Pacientes Activos</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <box-icon name='time' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Pendientes</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Citas de Hoy -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='calendar' color='#4cd1ff'></box-icon>
+                        Citas de Hoy
+                    </h2>
+                    <button class="btn-primary">
+                        <box-icon name='plus' color='#fff' size='xs'></box-icon>
+                        Nueva Cita
+                    </button>
+                </div>
+
+                <div class="appointments-list">
+                    {% if citas %}
+                        {% for cita in citas %}
+                        <div class="appointment-card">
+                            <div class="appointment-time">
+                                <box-icon name='time-five' color='#4cd1ff'></box-icon>
+                                <span>{{ cita[3].strftime('%H:%M') }}</span>
+                            </div>
+                            <div class="appointment-info">
+                                <h3>{{ cita[10] }}</h3>
+                                <p><box-icon name='notepad' size='xs' color='#666'></box-icon> {{ cita[5] or 'Consulta general' }}</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn-icon" title="Ver Historia">
+                                    <box-icon name='file-blank' color='#4cd1ff'></box-icon>
+                                </button>
+                                <button class="btn-icon" title="Iniciar Consulta">
+                                    <box-icon name='play-circle' color='#5cb85c'></box-icon>
+                                </button>
+                            </div>
+                            <span class="appointment-status status-{{ cita[6] }}">{{ cita[6] }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <box-icon name='calendar-x' color='#ccc' size='lg'></box-icon>
+                            <p>No tienes citas programadas para hoy</p>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='zap' color='#4cd1ff'></box-icon>
+                        Acciones Rápidas
+                    </h2>
+                </div>
+
+                <div class="quick-actions">
+                    <a href="{{ url_for('historias_clinicas') }}" class="action-card">
+                        <box-icon name='file-plus' color='#4cd1ff' size='lg'></box-icon>
+                        <h3>Nueva Historia Clínica</h3>
+                        <p>Crear registro de consulta</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='notepad' color='#7c4dff' size='lg'></box-icon>
+                        <h3>Prescribir Receta</h3>
+                        <p>Crear nueva receta médica</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='user-check' color='#5cb85c' size='lg'></box-icon>
+                        <h3>Ver Pacientes</h3>
+                        <p>Lista de pacientes activos</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='bar-chart' color='#ff9f43' size='lg'></box-icon>
+                        <h3>Reportes</h3>
+                        <p>Estadísticas y reportes</p>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

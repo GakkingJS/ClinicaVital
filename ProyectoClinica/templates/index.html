@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Clínica Vital - Inicio</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="background">
+    <div class="overlay"></div>
+  </div>
+
+  <header>
+    <h1 class="logo">Clínica <span>Vital</span></h1>
+    <nav>
+      <ul>
+        <li><a href="#">Inicio</a></li>
+        <li><a href="#">Servicios</a></li>
+        <li><a href="#">Contacto</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero">
+      <div class="content">
+        <h2>Bienvenido a tu sistema médico inteligente</h2>
+        <p>Gestión moderna y segura para médicos, pacientes y personal administrativo.</p>
+        <button onclick="window.location.href='/login'">Iniciar Sesión</button>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>© 2025 Clínica Vital — Desarrollado por Sebastián Ortiz Aya</p>
+  </footer>
+</body>
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+
+</html>

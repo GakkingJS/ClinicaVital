@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Secretaría</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <box-icon name='plus-medical' color='#4cd1ff' size='md'></box-icon>
+            <h2>Clínica <span>Vital</span></h2>
+        </div>
+        
+        <nav class="menu">
+            <a href="{{ url_for('dashboard_secretaria') }}" class="menu-item active">
+                <box-icon name='home' color='#fff'></box-icon>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('crear_cita') }}" class="menu-item">
+                <box-icon name='calendar-plus' color='#fff'></box-icon>
+                <span>Agendar Cita</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='calendar' color='#fff'></box-icon>
+                <span>Todas las Citas</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='group' color='#fff'></box-icon>
+                <span>Pacientes</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='user-plus' color='#fff'></box-icon>
+                <span>Registrar Paciente</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="menu-item logout">
+                <box-icon name='log-out' color='#ff4757'></box-icon>
+                <span>Cerrar Sesión</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="search-bar">
+                <box-icon name='search' color='#666'></box-icon>
+                <input type="text" placeholder="Buscar cita o paciente...">
+            </div>
+            <div class="user-info">
+                <div class="notifications">
+                    <box-icon name='bell' color='#666'></box-icon>
+                    <span class="badge">3</span>
+                </div>
+                <span class="welcome-text">Hola, <strong>{{ session.nombre_completo }}</strong></span>
+                <div class="user-avatar">
+                    <box-icon name='user-circle' color='#4cd1ff' size='lg'></box-icon>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <h1 class="page-title">Panel de Administración</h1>
+            
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <box-icon name='calendar-check' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ citas_hoy|length }}</h3>
+                        <p>Citas Hoy</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <box-icon name='check-circle' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Completadas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <box-icon name='time' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>5</h3>
+                        <p>Pendientes</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <box-icon name='group' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>156</h3>
+                        <p>Pacientes Registrados</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Agenda del Día -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='calendar' color='#4cd1ff'></box-icon>
+                        Agenda de Hoy
+                    </h2>
+                    <button class="btn-primary" onclick="window.location.href='{{ url_for('crear_cita') }}'">
+                        <box-icon name='plus' color='#fff' size='xs'></box-icon>
+                        Nueva Cita
+                    </button>
+                </div>
+
+                <div class="appointments-table">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Hora</th>
+                                <th>Paciente</th>
+                                <th>Doctor</th>
+                                <th>Especialidad</th>
+                                <th>Estado</th>
+                                <th>Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if citas_hoy %}
+                                {% for cita in citas_hoy %}
+                                <tr>
+                                    <td><strong>{{ cita[3].strftime('%H:%M') }}</strong></td>
+                                    <td>
+                                        <div class="patient-cell">
+                                            <box-icon name='user' color='#4cd1ff' size='sm'></box-icon>
+                                            <span>{{ cita[10] }}</span>
+                                        </div>
+                                    </td>
+                                    <td>Dr. {{ cita[11] }}</td>
+                                    <td><span class="specialty-badge">{{ cita[12] }}</span></td>
+                                    <td><span class="status-badge status-{{ cita[6] }}">{{ cita[6] }}</span></td>
+                                    <td class="actions-cell">
+                                        <button class="btn-icon" title="Ver Detalles">
+                                            <box-icon name='show' color='#4cd1ff'></box-icon>
+                                        </button>
+                                        <button class="btn-icon" title="Editar">
+                                            <box-icon name='edit' color='#5cb85c'></box-icon>
+                                        </button>
+                                        <button class="btn-icon" title="Cancelar">
+                                            <box-icon name='x-circle' color='#ff4757'></box-icon>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            {% else %}
+                                <tr>
+                                    <td colspan="6" class="empty-table">
+                                        <box-icon name='calendar-x' color='#ccc' size='lg'></box-icon>
+                                        <p>No hay citas programadas para hoy</p>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='zap' color='#4cd1ff'></box-icon>
+                        Acciones Rápidas
+                    </h2>
+                </div>
+
+                <div class="quick-actions">
+                    <a href="{{ url_for('crear_cita') }}" class="action-card">
+                        <box-icon name='calendar-plus' color='#4cd1ff' size='lg'></box-icon>
+                        <h3>Agendar Cita</h3>
+                        <p>Programar nueva cita médica</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='user-plus' color='#7c4dff' size='lg'></box-icon>
+                        <h3>Registrar Paciente</h3>
+                        <p>Agregar nuevo paciente</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='search-alt' color='#5cb85c' size='lg'></box-icon>
+                        <h3>Buscar Paciente</h3>
+                        <p>Consultar información</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='printer' color='#ff9f43' size='lg'></box-icon>
+                        <h3>Reportes</h3>
+                        <p>Generar reportes del día</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Vista Rápida de Doctores -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='briefcase-alt-2' color='#4cd1ff'></box-icon>
+                        Disponibilidad de Doctores
+                    </h2>
+                </div>
+
+                <div class="doctors-grid">
+                    <div class="doctor-card available">
+                        <div class="doctor-avatar">
+                            <box-icon name='user-circle' color='#4cd1ff' size='lg'></box-icon>
+                        </div>
+                        <h3>Dr. Juan García</h3>

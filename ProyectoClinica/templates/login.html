@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Formulario de Inicio de Sesión y Registro</title>
+  
+  <!-- Conexión correcta a tu CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+  
+  <!-- Boxicons -->
+  <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+
+<body>
+  <!-- Ondas animadas tipo aurora -->
+  <div class="wave"></div>
+  <div class="wave"></div>
+  <div class="wave"></div>
+  
+  <!-- Partículas brillantes flotantes -->
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  <div class="particle"></div>
+  
+  <!-- Resplandores ambientales -->
+  <div class="glow"></div>
+  <div class="glow"></div>
+  <div class="glow"></div>
+
+  <div class="container">
+    <div class="curved-shape"></div>
+    <div class="curved-shape2"></div>
+    
+    <!-- INICIO DE SESIÓN -->
+    <div class="form-box Login">
+      <h2 class="animation" style="--D:0; --S:21">Iniciar Sesión</h2>
+      <form method="POST" action="{{ url_for('login') }}">
+        <div class="input-box animation" style="--D:1; --S:22">
+          <input type="text" name="username" required>
+          <label for="">Usuario</label>
+          <box-icon type='solid' name='user' color="gray"></box-icon>
+        </div>
+        
+        <div class="input-box animation" style="--D:2; --S:23">
+          <input type="password" name="password" required>
+          <label for="">Contraseña</label>
+          <box-icon name='lock-alt' type='solid' color="gray"></box-icon>
+        </div>
+        
+        <div class="input-box animation" style="--D:3; --S:24">
+          <button class="btn" type="submit">Iniciar Sesión</button>
+        </div>
+        
+        <div class="regi-link animation" style="--D:4; --S:25">
+          <p>¿No tienes una cuenta?<br><a href="#" class="SignUpLink">Regístrate</a></p>
+        </div>
+      </form>
+    </div>
+    
+    <div class="info-content Login">
+      <h2 class="animation" style="--D:0; --S:20">¡Bienvenido!</h2>
+      <p class="animation" style="--D:1; --S:21">Estamos encantados de tenerte de nuevo con nosotros.</p>
+    </div>
+    
+    <!-- REGISTRO -->
+    <div class="form-box Register">
+      <h2 class="animation" style="--li:17; --S:0">Registrarse</h2>
+      <form method="POST" action="{{ url_for('register') }}">
+        <div class="input-box animation" style="--li:18; --S:1">
+          <input type="text" name="username" required>
+          <label for="">Usuario</label>
+          <box-icon type='solid' name='user' color="gray"></box-icon>
+        </div>
+        
+        <div class="input-box animation" style="--li:19; --S:2">
+          <input type="email" name="email" required>
+          <label for="">Correo Electrónico</label>
+          <box-icon name='envelope' type='solid' color="gray"></box-icon>
+        </div>
+        
+        <div class="input-box animation" style="--li:19; --S:3">
+          <input type="password" name="password" required>
+          <label for="">Contraseña</label>
+          <box-icon name='lock-alt' type='solid' color="gray"></box-icon>
+        </div>
+        
+        <div class="input-box animation" style="--li:20; --S:4">
+          <button class="btn" type="submit">Registrarse</button>
+        </div>
+        
+        <div class="regi-link animation" style="--li:21; --S:5">
+          <p>¿Ya tienes una cuenta?<br><a href="#" class="SignInLink">Iniciar Sesión</a></p>
+        </div>
+      </form>
+    </div>
+    
+    <div class="info-content Register">
+      <h2 class="animation" style="--li:17; --S:0">¡BIENVENIDO!</h2>
+      <p class="animation" style="--li:18; --S:1">Estamos encantados de tenerte aquí. Si necesitas ayuda, no dudes en contactarnos.</p>
+    </div>
+  </div>
+  
+  <!-- Conexión correcta a tu JS -->
+  <script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mi Portal - Paciente</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/dashboard.css') }}">
+    <script src="https://unpkg.com/boxicons@2.1.4/dist/boxicons.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo">
+            <box-icon name='plus-medical' color='#4cd1ff' size='md'></box-icon>
+            <h2>Clínica <span>Vital</span></h2>
+        </div>
+        
+        <nav class="menu">
+            <a href="{{ url_for('dashboard_paciente') }}" class="menu-item active">
+                <box-icon name='home' color='#fff'></box-icon>
+                <span>Inicio</span>
+            </a>
+            <a href="{{ url_for('mi_historia_clinica') }}" class="menu-item">
+                <box-icon name='file-blank' color='#fff'></box-icon>
+                <span>Mi Historia Clínica</span>
+            </a>
+            <a href="{{ url_for('mis_recetas') }}" class="menu-item">
+                <box-icon name='notepad' color='#fff'></box-icon>
+                <span>Mis Recetas</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='calendar' color='#fff'></box-icon>
+                <span>Mis Citas</span>
+            </a>
+            <a href="#" class="menu-item">
+                <box-icon name='user' color='#fff'></box-icon>
+                <span>Mi Perfil</span>
+            </a>
+            <a href="{{ url_for('logout') }}" class="menu-item logout">
+                <box-icon name='log-out' color='#ff4757'></box-icon>
+                <span>Cerrar Sesión</span>
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Header -->
+        <header class="top-bar">
+            <div class="search-bar">
+                <box-icon name='search' color='#666'></box-icon>
+                <input type="text" placeholder="Buscar en mi portal...">
+            </div>
+            <div class="user-info">
+                <span class="welcome-text">Hola, <strong>{{ session.nombre_completo }}</strong></span>
+                <div class="user-avatar">
+                    <box-icon name='user-circle' color='#4cd1ff' size='lg'></box-icon>
+                </div>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-container">
+            <h1 class="page-title">Mi Portal de Salud</h1>
+            
+            <!-- Mensajes Flash -->
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    {% for category, message in messages %}
+                        <div class="alert alert-{{ category }}">
+                            {{ message }}
+                        </div>
+                    {% endfor %}
+                {% endif %}
+            {% endwith %}
+
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon blue">
+                        <box-icon name='calendar-event' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>{{ citas|length }}</h3>
+                        <p>Próximas Citas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon purple">
+                        <box-icon name='notepad' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>3</h3>
+                        <p>Recetas Activas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon green">
+                        <box-icon name='file-blank' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>8</h3>
+                        <p>Consultas Realizadas</p>
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-icon orange">
+                        <box-icon name='bell' color='#fff' size='md'></box-icon>
+                    </div>
+                    <div class="stat-info">
+                        <h3>2</h3>
+                        <p>Notificaciones</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Próximas Citas -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='calendar' color='#4cd1ff'></box-icon>
+                        Próximas Citas
+                    </h2>
+                    <button class="btn-primary">
+                        <box-icon name='plus' color='#fff' size='xs'></box-icon>
+                        Agendar Cita
+                    </button>
+                </div>
+
+                <div class="appointments-list">
+                    {% if citas %}
+                        {% for cita in citas %}
+                        <div class="appointment-card patient">
+                            <div class="appointment-date">
+                                <div class="date-box">
+                                    <span class="day">{{ cita[3].strftime('%d') }}</span>
+                                    <span class="month">{{ cita[3].strftime('%b') }}</span>
+                                </div>
+                            </div>
+                            <div class="appointment-info">
+                                <h3>Dr. {{ cita[10] }}</h3>
+                                <p><box-icon name='briefcase-alt-2' size='xs' color='#666'></box-icon> {{ cita[11] }}</p>
+                                <p><box-icon name='time-five' size='xs' color='#666'></box-icon> {{ cita[3].strftime('%H:%M') }}</p>
+                            </div>
+                            <div class="appointment-actions">
+                                <button class="btn-icon" title="Ver Detalles">
+                                    <box-icon name='info-circle' color='#4cd1ff'></box-icon>
+                                </button>
+                                <button class="btn-icon" title="Cancelar">
+                                    <box-icon name='x-circle' color='#ff4757'></box-icon>
+                                </button>
+                            </div>
+                            <span class="appointment-status status-{{ cita[6] }}">{{ cita[6] }}</span>
+                        </div>
+                        {% endfor %}
+                    {% else %}
+                        <div class="empty-state">
+                            <box-icon name='calendar-x' color='#ccc' size='lg'></box-icon>
+                            <p>No tienes citas programadas</p>
+                            <button class="btn-primary">Agendar mi primera cita</button>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Acciones Rápidas -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='zap' color='#4cd1ff'></box-icon>
+                        Acceso Rápido
+                    </h2>
+                </div>
+
+                <div class="quick-actions">
+                    <a href="{{ url_for('mi_historia_clinica') }}" class="action-card">
+                        <box-icon name='file-blank' color='#4cd1ff' size='lg'></box-icon>
+                        <h3>Mi Historia Clínica</h3>
+                        <p>Ver mis consultas y diagnósticos</p>
+                    </a>
+
+                    <a href="{{ url_for('mis_recetas') }}" class="action-card">
+                        <box-icon name='notepad' color='#7c4dff' size='lg'></box-icon>
+                        <h3>Mis Recetas</h3>
+                        <p>Medicamentos prescritos</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='user-check' color='#5cb85c' size='lg'></box-icon>
+                        <h3>Elegir Doctor</h3>
+                        <p>Ver especialistas disponibles</p>
+                    </a>
+
+                    <a href="#" class="action-card">
+                        <box-icon name='message-square-detail' color='#ff9f43' size='lg'></box-icon>
+                        <h3>Mensajes</h3>
+                        <p>Comunicación con tu médico</p>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Recordatorios -->
+            <div class="content-section">
+                <div class="section-header">
+                    <h2>
+                        <box-icon name='bell' color='#4cd1ff'></box-icon>
+                        Recordatorios
+                    </h2>
+                </div>
+
+                <div class="reminders-list">
+                    <div class="reminder-card warning">
+                        <box-icon name='time' color='#ff9f43' size='md'></box-icon>
+                        <div class="reminder-content">
+                            <h4>Tomar medicamento</h4>
+                            <p>Amoxicilina 500mg - En 2 horas</p>
+                        </div>
+                    </div>
+
+                    <div class="reminder-card info">
+                        <box-icon name='calendar-check' color='#4cd1ff' size='md'></box-icon>
+                        <div class="reminder-content">
+                            <h4>Cita próxima</h4>
+                            <p>Control con Dr. García - Mañana 10:00 AM</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

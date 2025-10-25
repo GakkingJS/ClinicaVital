@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Panel Principal</title>
+  <style>
+    body {
+      background-color: #1a1a1d;
+      color: #fff;
+      font-family: 'Poppins', sans-serif;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
+    }
+    .panel {
+      text-align: center;
+      border: 2px solid #e46033;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 25px #e46033;
+    }
+    h1 {
+      margin-bottom: 15px;
+    }
+    a {
+      color: #e46033;
+      text-decoration: none;
+      font-weight: bold;
+    }
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="panel">
+    <h1>Bienvenido, {{ usuario }} 👋</h1>
+    <p>Has iniciado sesión correctamente.</p>
+    <a href="{{ url_for('logout') }}">Cerrar sesión</a>
+  </div>
+</body>
+</html>
