@@ -33,36 +33,6 @@ Esto permitirá:
 
 ---
 
-## 📂 Estructura del proyecto
-ProyectoClinica/
-├── app.py
-├── templates/
-│ ├── index.html
-│ ├── login.html
-│ ├── dashboard.html
-│ ├── doctor/
-│ │ ├── dashboard.html
-│ │ ├── historias_clinicas.html
-│ │ ├── crear_historia.html
-│ │ └── crear_receta.html
-│ ├── paciente/
-│ │ ├── dashboard.html
-│ │ ├── mi_historia.html
-│ │ └── mis_recetas.html
-│ ├── secretaria/
-│ │ ├── dashboard.html
-│ │ └── crear_cita.html
-│ └── admin/
-│ └── dashboard.html
-└── static/
-├── css/
-│ └── style.css
-└── js/
-└── main.js
-
-
----
-
 ## ⚙️ Tecnologías utilizadas
 - **Python (Flask)**
 - **HTML5, CSS3, JavaScript** 
