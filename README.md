@@ -33,7 +33,7 @@ Esto permitirá:
 
 ---
 
-## ⚙️ Tecnologías utilizadas
+## Tecnologías utilizadas
 - **Python (Flask)**
 - **HTML5, CSS3, JavaScript** 
 - **XAMPP / MySQL** 
